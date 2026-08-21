@@ -1,14 +1,33 @@
 import os
+import sys
 from dotenv import load_dotenv
 
+# Ensure both the repository root and backend directory are in sys.path for flexible deployment
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(CURRENT_DIR)
+if PARENT_DIR not in sys.path:
+    sys.path.insert(0, PARENT_DIR)
+if CURRENT_DIR not in sys.path:
+    sys.path.insert(0, CURRENT_DIR)
+
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(os.path.join(CURRENT_DIR, ".env"))
+load_dotenv(os.path.join(PARENT_DIR, ".env"))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from .db.database import engine, Base
-from .routers import auth, verification, upload, history, dashboard, report, agent_chat, compare
+
+try:
+    from backend.db.database import engine, Base
+    from backend.routers import auth, verification, upload, history, dashboard, report, agent_chat, compare
+except (ImportError, ModuleNotFoundError):
+    try:
+        from .db.database import engine, Base
+        from .routers import auth, verification, upload, history, dashboard, report, agent_chat, compare
+    except (ImportError, ModuleNotFoundError):
+        from db.database import engine, Base
+        from routers import auth, verification, upload, history, dashboard, report, agent_chat, compare
 
 # Initialize DB tables
 Base.metadata.create_all(bind=engine)

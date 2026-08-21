@@ -4,7 +4,7 @@ from typing import Optional, Union, Any
 from jose import jwt, JWTError
 import bcrypt
 
-SECRET_KEY = os.environ.get("FAKESENSE_SECRET_KEY", "fakesense-super-secret-production-key-928374928374")
+SECRET_KEY = os.environ.get("FAKESENSE_SECRET_KEY") or os.environ.get("SECRET_KEY") or "fakesense-super-secret-production-key-928374928374"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 

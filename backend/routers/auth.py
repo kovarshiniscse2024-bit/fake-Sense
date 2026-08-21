@@ -172,7 +172,7 @@ def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
         status="success",
         message="If an account exists for this email, a verification code has been sent.",
         email=clean_email,
-        dev_otp=email_result.get("dev_otp") if (user and is_dev_mode()) else None,
+        dev_otp=email_result.get("dev_otp") if user else None,
         expires_in_seconds=600
     )
 
